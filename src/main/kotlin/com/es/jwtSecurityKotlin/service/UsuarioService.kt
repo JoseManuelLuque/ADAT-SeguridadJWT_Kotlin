@@ -3,10 +3,13 @@ package com.es.jwtSecurityKotlin.service
 import com.es.jwtSecurityKotlin.model.Usuario
 import com.es.jwtSecurityKotlin.repository.UsuarioRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 
 @Service
-class UsuarioService {
+class UsuarioService : UserDetailsService {
 
     @Autowired
     private lateinit var usuarioRepository: UsuarioRepository
@@ -15,12 +18,23 @@ class UsuarioService {
     /*
     TODO
      */
+    override fun loadUserByUsername(username: String?): UserDetails {
+        val usuario: Usuario = usuarioRepository
+            .findByUsername(username!!)
+            .orElseThrow()
 
+        return User
+            .builder()
+            .username(usuario.username)
+            .password(usuario.password)
+            .roles(usuario.roles!!.split(",").toString())
+            .build()
+    }
 
     /*
     MÉTODO PARA INSERTAR UN USUARIO
      */
-    fun registerUsuario(usuario: Usuario) : Usuario? {
+    fun registerUsuario(usuario: Usuario): Usuario? {
 
         // Comprobamos que el usuario no existe en la base de datos
 
@@ -36,7 +50,6 @@ class UsuarioService {
 
 
         // Guardamos el newUsuario en la base de datos... igual que siempre
-
 
 
         // Devolvemos el Usuario insertado en la BDD
