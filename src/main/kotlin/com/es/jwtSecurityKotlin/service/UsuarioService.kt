@@ -3,6 +3,8 @@ package com.es.jwtSecurityKotlin.service
 import com.es.jwtSecurityKotlin.model.Usuario
 import com.es.jwtSecurityKotlin.repository.UsuarioRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -27,7 +29,7 @@ class UsuarioService : UserDetailsService {
             .builder()
             .username(usuario.username)
             .password(usuario.password)
-            .roles(usuario.roles!!.split(",").toString())
+            .roles(usuario.roles)
             .build()
     }
 
